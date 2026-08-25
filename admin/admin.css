@@ -1,0 +1,472 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+body {
+  margin: 0;
+  color: #000;
+  background: #fff;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button,
+a {
+  color: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #d7d7d7;
+  background: #fff;
+  padding: 8px;
+  border-radius: 0;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.admin-shell {
+  min-height: 100vh;
+}
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #fff;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: 18px;
+}
+
+.admin-header a {
+  text-decoration: none;
+}
+
+.login-view {
+  min-height: calc(100vh - 38px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.login-form {
+  width: min(360px, 100%);
+  display: grid;
+  gap: 14px;
+}
+
+.login-form label,
+.form-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.login-form button,
+.project-form button[type="submit"] {
+  border: 1px solid #000;
+  padding: 8px 12px;
+}
+
+.admin-view {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 38px);
+}
+
+.project-sidebar {
+  border-right: 1px solid #e7e7e7;
+  padding: 10px;
+}
+
+.sidebar-heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.project-menu {
+  display: grid;
+  gap: 6px;
+}
+
+.project-menu button {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+  text-align: left;
+  padding: 5px 0;
+}
+
+#projectMenu button {
+  cursor: grab;
+}
+
+#projectMenu button:active {
+  cursor: grabbing;
+}
+
+#projectMenu button.is-dragging {
+  opacity: 0.25;
+}
+
+#projectMenu button.is-drag-over {
+  border-top: 1px solid #000;
+}
+
+.project-menu button.is-active {
+  color: #999;
+}
+
+.editor {
+  padding: 10px;
+}
+
+.empty-editor {
+  color: #999;
+}
+
+.project-form {
+  max-width: 900px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 10px;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.checkbox-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.checkbox-label input {
+  width: auto;
+}
+
+.media-section {
+  margin-top: 36px;
+}
+
+.section-title,
+.section-title-row {
+  margin-bottom: 10px;
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.help,
+.message {
+  color: #777;
+  margin: 4px 0 10px;
+  font-size: 12px;
+}
+
+.cover-preview {
+  width: 100%;
+  max-width: 440px;
+  margin-bottom: 10px;
+}
+
+.cover-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gallery-editor {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.gallery-row {
+  display: grid;
+  grid-template-columns: 120px 140px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #e7e7e7;
+  cursor: grab;
+  background: #fff;
+}
+
+.gallery-row:active {
+  cursor: grabbing;
+}
+
+.gallery-row.is-dragging {
+  opacity: 0.35;
+}
+
+.gallery-row.is-drag-over {
+  border-top-color: #000;
+}
+
+.gallery-layout {
+  width: 100%;
+}
+
+.gallery-row img {
+  display: block;
+  width: 120px;
+  height: 84px;
+  object-fit: cover;
+  background: #f3f3f3;
+}
+
+.gallery-row .remove-image {
+  justify-self: end;
+}
+
+.upload-button {
+  display: inline-block;
+  width: auto;
+  border: 1px solid #000;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.upload-button input {
+  display: none;
+}
+
+.gallery-upload-button {
+  margin-bottom: 2px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 44px;
+  padding-top: 10px;
+  border-top: 1px solid #e7e7e7;
+}
+
+.form-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.danger {
+  color: #c00;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  .admin-view {
+    grid-template-columns: 1fr;
+  }
+
+  .project-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid #e7e7e7;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .span-2 {
+    grid-column: span 1;
+  }
+
+  .gallery-row {
+    grid-template-columns: 80px minmax(0, 1fr);
+  }
+
+  .gallery-row img {
+    width: 80px;
+    height: 56px;
+  }
+
+  .gallery-row .gallery-layout,
+  .gallery-row .remove-image {
+    grid-column: 2;
+  }
+
+  .gallery-row .remove-image {
+    justify-self: start;
+  }
+}
+
+
+.credit-editor-section {
+  margin-top: 8px;
+}
+
+.credit-editor {
+  display: grid;
+  gap: 8px;
+}
+
+.credit-editor-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.7fr) minmax(180px, 1.3fr) 76px 60px;
+  gap: 8px;
+  align-items: center;
+}
+
+.credit-editor-row .remove-credit {
+  text-align: right;
+}
+
+@media (max-width: 767px) {
+  .credit-editor-row {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-editor-row .remove-credit {
+    text-align: left;
+  }
+}
+
+.site-heading {
+  margin-top: 24px;
+}
+
+#aboutEditorButton.is-active {
+  opacity: 0.5;
+}
+
+.about-actions {
+  margin-top: 20px;
+}
+
+
+.visibility-section {
+  margin-top: 6px;
+}
+
+.visibility-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.visibility-toggle > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.visibility-switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 18px;
+  border: 1px solid #000;
+  border-radius: 999px;
+  transition: background 160ms ease;
+}
+
+.visibility-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #000;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.visibility-toggle > input:checked + .visibility-switch {
+  background: #000;
+}
+
+.visibility-toggle > input:checked + .visibility-switch::after {
+  transform: translateX(16px);
+  background: #fff;
+}
+
+.visibility-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.visibility-copy strong {
+  font: inherit;
+  font-weight: 500;
+}
+
+.visibility-copy small {
+  font: inherit;
+  opacity: 0.5;
+}
+
+.project-menu button .project-visibility {
+  opacity: 0.45;
+  margin-left: auto;
+}
+
+.project-menu button.is-hidden-project {
+  opacity: 0.45;
+}
+
+.project-menu button .project-visibility {
+  white-space: nowrap;
+  justify-self: end;
+}
+
+
+.numbering-control {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 14px;
+}
+
+.numbering-control label {
+  opacity: 0.55;
+}
+
+.numbering-control select,
+.numbering-control button {
+  width: 100%;
+}
