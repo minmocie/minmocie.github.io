@@ -70,27 +70,97 @@ const archiveCursorPreviewImage = document.getElementById("archiveCursorPreviewI
 const siteName = document.getElementById("siteName");
 
 const seoulClock = document.getElementById("seoulClock");
+const clockHour = document.getElementById("clockHour");
+const clockMinute = document.getElementById("clockMinute");
+const clockSecond = document.getElementById("clockSecond");
+const analogHourLine = document.getElementById("analogHourLine");
+const analogHourArrow = document.getElementById("analogHourArrow");
+const analogMinuteLine = document.getElementById("analogMinuteLine");
+const analogMinuteArrow = document.getElementById("analogMinuteArrow");
+const mobileAnalogHourLine = document.getElementById("mobileAnalogHourLine");
+const mobileAnalogHourArrow = document.getElementById("mobileAnalogHourArrow");
+const mobileAnalogMinuteLine = document.getElementById("mobileAnalogMinuteLine");
+const mobileAnalogMinuteArrow = document.getElementById("mobileAnalogMinuteArrow");
+
+const seoulTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Asia/Seoul",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false
+});
 
 function updateSeoulClock() {
   if (!seoulClock) return;
 
-  const time = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Seoul",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-  }).format(new Date());
+  const time = seoulTimeFormatter.format(new Date());
+  const [hourText, minuteText, secondText] = time.split(":");
 
-  const [hour, minute, second] = time.split(":");
-  seoulClock.innerHTML = `
-    <span class="clock-city">SEOUL</span>
-    <span class="clock-time">
-      <span>${hour}</span><span class="clock-colon">:</span>
-      <span>${minute}</span><span class="clock-colon">:</span>
-      <span>${second}</span>
-    </span>
-  `;
+  if (clockHour) clockHour.textContent = hourText;
+  if (clockMinute) clockMinute.textContent = minuteText;
+  if (clockSecond) clockSecond.textContent = secondText;
+
+  const hour = Number(hourText) % 12;
+  const minute = Number(minuteText);
+  const second = Number(secondText);
+
+  // Both hands move continuously with the seconds value included.
+  const hourAngle = (hour * 30) + (minute * 0.5) + (second / 120);
+  const minuteAngle = (minute * 6) + (second * 0.1);
+
+  function setAnalogHand(
+    line,
+    arrow,
+    angle,
+    length,
+    tailLength,
+    arrowLength = 5.5,
+    arrowWidth = 3.4
+  ) {
+    if (!line || !arrow) return;
+
+    const radians = (angle - 90) * Math.PI / 180;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+
+    const tipX = 50 + cos * length;
+    const tipY = 50 + sin * length;
+
+    // Extend a short tail through the center in the opposite direction.
+    const tailX = 50 - cos * tailLength;
+    const tailY = 50 - sin * tailLength;
+
+    const baseX = tipX - cos * arrowLength;
+    const baseY = tipY - sin * arrowLength;
+
+    // Stop the shaft exactly at the arrowhead base.
+    // This keeps the line from visibly poking through the arrow tip.
+    line.setAttribute("x1", tailX.toFixed(3));
+    line.setAttribute("y1", tailY.toFixed(3));
+    line.setAttribute("x2", baseX.toFixed(3));
+    line.setAttribute("y2", baseY.toFixed(3));
+
+    const perpX = -sin * arrowWidth;
+    const perpY =  cos * arrowWidth;
+
+    const leftX = baseX + perpX;
+    const leftY = baseY + perpY;
+    const rightX = baseX - perpX;
+    const rightY = baseY - perpY;
+
+    arrow.setAttribute(
+      "d",
+      `M ${tipX.toFixed(3)} ${tipY.toFixed(3)} ` +
+      `L ${leftX.toFixed(3)} ${leftY.toFixed(3)} ` +
+      `L ${rightX.toFixed(3)} ${rightY.toFixed(3)} Z`
+    );
+  }
+
+  setAnalogHand(analogHourLine, analogHourArrow, hourAngle, 25, 5.5);
+  setAnalogHand(analogMinuteLine, analogMinuteArrow, minuteAngle, 35, 7);
+
+  setAnalogHand(mobileAnalogHourLine, mobileAnalogHourArrow, hourAngle, 25, 5.5);
+  setAnalogHand(mobileAnalogMinuteLine, mobileAnalogMinuteArrow, minuteAngle, 35, 7);
 }
 
 updateSeoulClock();

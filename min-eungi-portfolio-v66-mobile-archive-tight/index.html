@@ -13,7 +13,41 @@
     <button class="archive-link" id="archiveButton" type="button">Archive</button>
   </header>
   <div class="seoul-clock" id="seoulClock" aria-label="Current time in Seoul">
-    SEOUL --:--:--
+    <svg class="analog-clock" viewBox="0 0 100 100" aria-hidden="true">
+      <g class="analog-clock-dots">
+        <circle cx="50.000" cy="8.000" r="1.2"></circle>
+        <circle cx="71.000" cy="13.627" r="1.2"></circle>
+        <circle cx="86.373" cy="29.000" r="1.2"></circle>
+        <circle cx="92.000" cy="50.000" r="1.2"></circle>
+        <circle cx="86.373" cy="71.000" r="1.2"></circle>
+        <circle cx="71.000" cy="86.373" r="1.2"></circle>
+        <circle cx="50.000" cy="92.000" r="1.2"></circle>
+        <circle cx="29.000" cy="86.373" r="1.2"></circle>
+        <circle cx="13.627" cy="71.000" r="1.2"></circle>
+        <circle cx="8.000" cy="50.000" r="1.2"></circle>
+        <circle cx="13.627" cy="29.000" r="1.2"></circle>
+        <circle cx="29.000" cy="13.627" r="1.2"></circle>
+      </g>
+
+      <g class="analog-hand analog-hour-hand">
+        <line id="analogHourLine" x1="50" y1="50" x2="50" y2="27"></line>
+        <path id="analogHourArrow" d=""></path>
+      </g>
+
+      <g class="analog-hand analog-minute-hand">
+        <line id="analogMinuteLine" x1="50" y1="50" x2="50" y2="17"></line>
+        <path id="analogMinuteArrow" d=""></path>
+      </g>
+    </svg>
+
+    <div class="seoul-clock-digital">
+      <span class="clock-city">SEOUL</span>
+      <span class="clock-time">
+        <span id="clockHour">--</span><span class="clock-colon">:</span>
+        <span id="clockMinute">--</span><span class="clock-colon">:</span>
+        <span id="clockSecond">--</span>
+      </span>
+    </div>
   </div>
 
 
@@ -111,6 +145,35 @@
 
   <!-- ABOUT -->
   <section class="about-page" id="aboutPage" aria-hidden="true">
+    <div class="about-mobile-clock" aria-hidden="true">
+    <svg class="analog-clock about-mobile-analog-clock" viewBox="0 0 100 100" aria-hidden="true">
+      <g class="analog-clock-dots">
+        <circle cx="50.000" cy="8.000" r="1.2"></circle>
+        <circle cx="71.000" cy="13.627" r="1.2"></circle>
+        <circle cx="86.373" cy="29.000" r="1.2"></circle>
+        <circle cx="92.000" cy="50.000" r="1.2"></circle>
+        <circle cx="86.373" cy="71.000" r="1.2"></circle>
+        <circle cx="71.000" cy="86.373" r="1.2"></circle>
+        <circle cx="50.000" cy="92.000" r="1.2"></circle>
+        <circle cx="29.000" cy="86.373" r="1.2"></circle>
+        <circle cx="13.627" cy="71.000" r="1.2"></circle>
+        <circle cx="8.000" cy="50.000" r="1.2"></circle>
+        <circle cx="13.627" cy="29.000" r="1.2"></circle>
+        <circle cx="29.000" cy="13.627" r="1.2"></circle>
+      </g>
+
+      <g class="analog-hand analog-hour-hand">
+        <line id="mobileAnalogHourLine" x1="50" y1="50" x2="50" y2="27"></line>
+        <path id="mobileAnalogHourArrow" d=""></path>
+      </g>
+
+      <g class="analog-hand analog-minute-hand">
+        <line id="mobileAnalogMinuteLine" x1="50" y1="50" x2="50" y2="17"></line>
+        <path id="mobileAnalogMinuteArrow" d=""></path>
+      </g>
+    </svg>
+    </div>
+
     <button
       class="about-close"
       id="aboutClose"
