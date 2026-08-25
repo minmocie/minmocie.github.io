@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Min Eungi — Admin</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-header">
+      <div>Min Eungi — Admin</div>
+      <div class="admin-header-actions">
+        <a href="../" target="_blank" rel="noopener">View Site</a>
+        <button id="signOutButton" class="text-button is-hidden" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section id="loginView" class="login-view">
+      <form id="loginForm" class="login-form">
+        <label>
+          Email
+          <input id="loginEmail" type="email" autocomplete="email" required />
+        </label>
+
+        <label>
+          Password
+          <input id="loginPassword" type="password" autocomplete="current-password" required />
+        </label>
+
+        <button type="submit">Log in</button>
+        <p id="loginMessage" class="message"></p>
+      </form>
+    </section>
+
+    <section id="adminView" class="admin-view is-hidden">
+      <aside class="project-sidebar">
+        <div class="sidebar-heading">
+          <span>Projects</span>
+          <button id="newProjectButton" type="button">+ Add</button>
+        </div>
+        <div id="projectMenu" class="project-menu"></div>
+
+        <div class="sidebar-heading site-heading">
+          <span>Site</span>
+        </div>
+        <div class="numbering-control">
+          <label for="projectNumberFormat">Project Numbering</label>
+          <select id="projectNumberFormat">
+            <option value="bracket_plain">[1]</option>
+            <option value="bracket_padded">[01]</option>
+            <option value="plain">1</option>
+            <option value="padded">01</option>
+            <option value="paren_plain">(1)</option>
+            <option value="paren_padded">(01)</option>
+          </select>
+          <button id="saveNumberFormatButton" type="button">Apply</button>
+          <span id="numberFormatMessage" class="message"></span>
+        </div>
+        <div class="project-menu">
+          <button id="aboutEditorButton" type="button">
+            <span></span>
+            <span>About</span>
+          </button>
+        </div>
+      </aside>
+
+      <section class="editor">
+        <div id="emptyEditor" class="empty-editor">Select a project.</div>
+
+        <form id="projectForm" class="project-form is-hidden">
+          <input id="projectId" type="hidden" />
+
+          <div class="form-grid">
+            <label class="span-2">
+              Title
+              <input id="title" type="text" required />
+            </label>
+
+            <label>
+              Year
+              <input id="year" type="text" />
+            </label>
+
+            <label class="span-2">
+              Category
+              <input id="category" type="text" />
+            </label>
+
+            <label class="span-2">
+              Main Description
+              <textarea
+                id="description"
+                rows="5"
+                placeholder="메인 프로젝트 목록에 노출되는 짧은 설명"
+              ></textarea>
+            </label>
+
+            <label class="span-2">
+              Lightbox Description — EN
+              <textarea
+                id="lightboxDescription"
+                rows="7"
+                placeholder="English description shown in the lightbox"
+              ></textarea>
+            </label>
+
+            <label class="span-2">
+              Lightbox Description — KR
+              <textarea
+                id="lightboxDescriptionKr"
+                rows="7"
+                placeholder="라이트박스에 노출되는 국문 설명"
+              ></textarea>
+            </label>
+
+            <div class="span-2 credit-editor-section">
+              <div class="section-title-row">
+                <div>Lightbox Credit Items</div>
+                <button id="addCreditButton" type="button">+ Add Item</button>
+              </div>
+              <p class="help">
+                Client, Date, Art Direction, Design 외에도 원하는 항목을 자유롭게 추가할 수 있습니다.
+              </p>
+              <div id="creditEditor" class="credit-editor"></div>
+            </div>
+
+                        <div class="span-2 visibility-section">
+              <div class="section-title">Visibility</div>
+              <label class="visibility-toggle">
+                <input id="isPublished" type="checkbox" />
+                <span class="visibility-switch" aria-hidden="true"></span>
+                <span class="visibility-copy">
+                  <strong id="visibilityStatus">Visible</strong>
+                  <small>Hidden으로 바꾸면 공개 사이트에서는 보이지 않습니다.</small>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <section class="media-section">
+            <div class="section-title">Main Image</div>
+            <p class="help">Recommended: WebP · 300KB–1MB / Max. 1.5MB</p>
+            <div id="coverPreview" class="cover-preview"></div>
+            <label class="upload-button">
+              Upload Main Image
+              <input id="coverFile" type="file" accept="image/*" />
+            </label>
+          </section>
+
+          <section class="media-section">
+            <div class="section-title">Lightbox Images</div>
+            <p class="help">Recommended: WebP · 500KB–1.5MB each / Max. 2MB</p>
+            <p class="help">
+              이미지를 업로드한 뒤 드래그해서 순서를 바꿀 수 있습니다.
+              Layout만 선택하면 됩니다.
+              (Half+Half / 1/3+2/3 / 1/3+1/3+1/3)
+            </p>
+            <label class="upload-button gallery-upload-button">
+              Upload Images
+              <input id="galleryFiles" type="file" accept="image/*" multiple />
+            </label>
+            <div id="galleryEditor" class="gallery-editor"></div>
+          </section>
+
+          <div class="form-actions">
+            <button id="deleteProjectButton" class="danger" type="button">Delete</button>
+            <div class="form-actions-right">
+              <span id="saveMessage" class="message"></span>
+              <button type="submit">Save</button>
+            </div>
+          </div>
+        </form>
+
+        <form id="aboutForm" class="project-form is-hidden">
+          <div class="form-grid">
+            <label class="span-2">
+              About — EN
+              <textarea id="aboutEnInput" rows="8"></textarea>
+            </label>
+
+            <label class="span-2">
+              About — KR
+              <textarea id="aboutKrInput" rows="8"></textarea>
+            </label>
+
+            <div class="span-2 section-title">Contact</div>
+            <label>
+              Label
+              <input id="aboutContactLabelInput" type="text" />
+            </label>
+            <label>
+              Value
+              <textarea id="aboutContactValueInput" rows="4"></textarea>
+            </label>
+            <label class="span-2">
+              Note
+              <textarea id="aboutContactNoteInput" rows="4"></textarea>
+            </label>
+
+            <div class="span-2 section-title">Experience</div>
+            <label>
+              Label
+              <input id="aboutExperienceLabelInput" type="text" />
+            </label>
+            <label>
+              Value
+              <textarea id="aboutExperienceValueInput" rows="3"></textarea>
+            </label>
+            <label class="span-2">
+              Note
+              <textarea id="aboutExperienceNoteInput" rows="4"></textarea>
+            </label>
+
+            <div class="span-2 section-title">Education</div>
+            <label>
+              Label
+              <input id="aboutEducationLabelInput" type="text" />
+            </label>
+            <label>
+              Value
+              <textarea id="aboutEducationValueInput" rows="3"></textarea>
+            </label>
+            <label class="span-2">
+              Note
+              <textarea id="aboutEducationNoteInput" rows="4"></textarea>
+            </label>
+          </div>
+
+          <div class="form-actions about-actions">
+            <div></div>
+            <div class="form-actions-right">
+              <span id="aboutSaveMessage" class="message"></span>
+              <button type="submit">Save About</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

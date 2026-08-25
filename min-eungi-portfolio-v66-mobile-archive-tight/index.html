@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Min Eungi</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="site-name" id="siteName" href="#" aria-label="Return to projects">Min eungi</a>
+    <button class="about-link" id="aboutButton" type="button">About</button>
+    <button class="archive-link" id="archiveButton" type="button">Archive</button>
+  </header>
+  <div class="seoul-clock" id="seoulClock" aria-label="Current time in Seoul">
+    SEOUL --:--:--
+  </div>
+
+
+  <main class="project-list" aria-label="Projects">
+
+    <article class="project">
+      <div class="project-meta">
+        <div class="project-id">[01]</div>
+        <div class="project-title">texture</div>
+
+        <div class="project-info">
+          <div class="project-year">2024</div>
+          <div class="project-category">Hair Salon Branding</div>
+          <p class="project-description">
+            We redefined the hair salon as an experiential space where different senses intersect,
+            rather than simply a place for beauty services, and translated this concept into a
+            cohesive brand identity.
+          </p>
+        </div>
+      </div>
+
+      <button
+        class="project-image-button"
+        type="button"
+        data-open-project="texture"
+        aria-label="Open texture project"
+      >
+        <img src="images/texture-main.svg" alt="Texture project preview" />
+      </button>
+    </article>
+
+
+    <article class="project">
+      <div class="project-meta">
+        <div class="project-id">[02]</div>
+        <div class="project-title">Portré</div>
+
+        <div class="project-info">
+          <div class="project-year">2023</div>
+          <div class="project-category">Cosmetic Branding</div>
+          <p class="project-description">
+            Inspired by the word “portrait,” Portré was defined as a brand that captures each
+            individual’s unique appearance beyond conventional standards of beauty, and this idea
+            was translated into its visual identity.
+          </p>
+        </div>
+      </div>
+
+      <button
+        class="project-image-button"
+        type="button"
+        data-open-project="portre"
+        aria-label="Open Portré project"
+      >
+        <img src="images/portre-main.svg" alt="Portré project preview" />
+      </button>
+    </article>
+
+  </main>
+
+
+  <footer class="main-footer">
+    <a class="footer-email" href="mailto:eun9i.min@gmail.com">Email</a>
+    <a class="footer-instagram" href="https://www.instagram.com/minmocie/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <span class="footer-copyright">© 2026. mineungi. all rights reserved.</span>
+  </footer>
+
+
+  <!-- ARCHIVE -->
+  <section class="archive-page" id="archivePage" aria-hidden="true">
+    <div class="archive-list" id="archiveList" aria-label="Project archive"></div>
+
+    <div class="archive-cursor-preview" id="archiveCursorPreview" aria-hidden="true">
+      <img id="archiveCursorPreviewImage" src="" alt="" />
+    </div>
+
+    <footer class="archive-footer">
+      <a class="footer-email" href="mailto:eun9i.min@gmail.com">Email</a>
+      <a class="footer-instagram" href="https://www.instagram.com/minmocie/" target="_blank" rel="noopener noreferrer">Instagram</a>
+      <span class="footer-copyright">© 2026. mineungi. all rights reserved.</span>
+    </footer>
+  </section>
+
+  <!-- ABOUT BACKDROP
+       Full-screen layer behind the green panel.
+       On mobile it blurs the original Projects page.
+       Clicking it closes About. -->
+  <button
+    class="about-backdrop"
+    id="aboutBackdrop"
+    type="button"
+    aria-label="Close About"
+    tabindex="-1"
+  ></button>
+
+  <!-- ABOUT -->
+  <section class="about-page" id="aboutPage" aria-hidden="true">
+    <button
+      class="about-close"
+      id="aboutClose"
+      type="button"
+      aria-label="Close About"
+    >
+      ×
+    </button>
+
+    <div class="about-scroll">
+      <div class="about-content">
+
+        <section class="about-language">
+          <div class="language-label">EN</div>
+          <p id="aboutEn">
+            Throughout his career, he has managed design teams, mentored emerging talent,
+            led client workshops and presentations, and developed comprehensive design strategies
+            and visual directions. His practice is grounded in a thoughtful approach to branding,
+            visual identity, and cross-disciplinary collaboration.
+          </p>
+        </section>
+
+        <section class="about-language">
+          <div class="language-label">KR</div>
+          <p id="aboutKr">
+            Throughout his career, he has managed design teams, mentored emerging talent,
+            led client workshops and presentations, and developed comprehensive design strategies
+            and visual directions. His practice is grounded in a thoughtful approach to branding,
+            visual identity, and cross-disciplinary collaboration.
+          </p>
+        </section>
+
+        <div class="about-details">
+
+          <div class="about-row">
+            <div class="about-label" id="aboutContactLabel">Contact</div>
+            <div class="about-value" id="aboutContactValue">
+              <div>+82 10 7207 1466</div>
+              <div>eun9i.min@gmail.com</div>
+            </div>
+            <div class="about-note" id="aboutContactNote">
+              Based in Seoul, South Korea<br />
+              available for<br />
+              commissions worldwide
+            </div>
+          </div>
+
+          <div class="about-row">
+            <div class="about-label" id="aboutExperienceLabel">Experience</div>
+            <div class="about-value" id="aboutExperienceValue">2020.6 — 2026.4</div>
+            <div class="about-note" id="aboutExperienceNote">
+              Triangle-Studio<br />
+              Graphic Designer
+            </div>
+          </div>
+
+          <div class="about-row">
+            <div class="about-label" id="aboutEducationLabel">Education</div>
+            <div class="about-value" id="aboutEducationValue">2014 — 2019</div>
+            <div class="about-note" id="aboutEducationNote">
+              Seoul National University of S&amp;T<br />
+              Visual Design
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- PROJECT LIGHTBOX -->
+  <section class="project-overlay" id="projectOverlay" aria-hidden="true">
+    <div class="overlay-scroll">
+
+      <div class="overlay-topbar">
+        <div class="overlay-index-title">
+          <span id="overlayIndex">[01]</span>
+          <span id="overlayTitle">texture</span>
+        </div>
+
+        <div class="overlay-category" id="overlayCategory">
+          Hair Salon Branding
+        </div>
+
+        <button
+          class="overlay-close"
+          id="overlayClose"
+          type="button"
+          aria-label="Close project"
+        >
+          ×
+        </button>
+      </div>
+
+
+      <div
+        class="overlay-gallery"
+        id="overlayGallery"
+        aria-label="Project gallery"
+      ></div>
+
+
+      <div class="overlay-credits">
+        <div class="credit-labels" id="creditLabels"></div>
+
+        <div class="credit-values" id="creditValues"></div>
+
+        <div class="credit-description-group">
+          <p class="credit-description credit-description-en" id="creditDescriptionEn"></p>
+          <p class="credit-description credit-description-kr" id="creditDescriptionKr"></p>
+        </div>
+      </div>
+
+
+      <footer class="overlay-footer">
+        <nav class="project-nav" aria-label="Project navigation">
+          <button id="previousProject" type="button">
+            <span class="nav-arrow nav-arrow-left" aria-hidden="true"></span>
+            <span>Previous</span>
+          </button>
+          <button id="nextProject" type="button">
+            <span>Next</span>
+            <span class="nav-arrow nav-arrow-right" aria-hidden="true"></span>
+          </button>
+        </nav>
+      </footer>
+
+    </div>
+  </section>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

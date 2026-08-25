@@ -1,0 +1,1487 @@
+:root {
+  --base-font-size: clamp(13px, calc(11px + 0.2vw), 16px);
+}
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--base-font-size);
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: #000;
+
+  font-family:
+    "Neue Haas Grotesk Display Pro",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  font-size: var(--base-font-size);
+  line-height: 1.18;
+  letter-spacing: 0.03em;
+}
+
+button,
+a {
+  color: inherit;
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+
+/* =========================================================
+   GLOBAL HEADER
+========================================================= */
+
+.site-header {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.site-name,
+.about-link,
+.archive-link {
+  position: absolute;
+  pointer-events: auto;
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: color 120ms ease;
+}
+
+.site-name {
+  top: 10px;
+  left: 10px;
+}
+
+.about-link {
+  left: 10px;
+  bottom: 10px;
+}
+
+.archive-link {
+  position: absolute;
+  left: 120px;
+  bottom: 10px;
+  pointer-events: auto;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+body.archive-open .archive-link {
+  color: #999;
+}
+
+.site-name:hover,
+.about-link:hover,
+.archive-link:hover {
+  color: #999;
+}
+
+
+/* When About opens, the fixed left-side header fades with the project page. */
+body.about-open .site-header {
+  z-index: 40;
+  opacity: 0.6;
+}
+
+.site-header {
+  transition:
+    opacity 300ms ease,
+    background-color 300ms ease;
+}
+
+
+/* =========================================================
+   MAIN PROJECT PAGE
+   40% empty / 10% index / 20% title / 30% info
+========================================================= */
+
+.project-list {
+  width: 60%;
+  margin-left: 40%;
+  padding-right: 10px;
+  min-height: 100vh;
+}
+
+.project {
+  width: 100%;
+}
+
+.project-meta {
+  display: grid;
+  grid-template-columns: 16.6667% 33.3333% 50%;
+  align-items: start;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.project-id,
+.project-title,
+.project-info {
+  padding: 0;
+}
+
+.project-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+}
+
+.project-year,
+.project-category {
+  color: #8f8f8f;
+}
+
+.project-description {
+  margin: 10px 0 0;
+  max-width: none;
+}
+
+.project-image-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.project-image-button img {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  transition:
+    filter 180ms ease,
+    opacity 180ms ease;
+}
+
+.project-image-button.is-opening img {
+  filter: blur(2.5px);
+  opacity: 0.7;
+}
+
+
+
+/* =========================================================
+   MAIN PAGE FOOTER
+   Desktop follows the same 40 / 10 / 20 / 30 grid.
+========================================================= */
+
+.main-footer {
+  width: 60%;
+  margin-left: 40%;
+
+  display: grid;
+  grid-template-columns: 16.6667% 33.3333% 50%;
+  align-items: end;
+
+  padding: 10px 10px 10px 0;
+}
+
+.main-footer a,
+.footer-instagram,
+.footer-copyright {
+  text-decoration: none;
+}
+
+.main-footer a {
+  transition: color 120ms ease;
+}
+
+.main-footer a:hover {
+  color: #999;
+}
+
+.footer-email {
+  grid-column: 1;
+}
+
+.footer-instagram {
+  grid-column: 2;
+}
+
+.footer-copyright {
+  grid-column: 3;
+  text-align: right;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   ABOUT BACKDROP
+   Full viewport, so the blur never creates a hard 1/3 edge.
+========================================================= */
+
+.about-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  cursor: default;
+
+  transition:
+    opacity 650ms ease,
+    visibility 0s linear 650ms;
+}
+
+.about-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transition:
+    opacity 300ms ease,
+    visibility 0s linear 0s;
+}
+
+
+
+/* =========================================================
+   ABOUT — DESKTOP ONLY CLEAN FADE OUT
+   Desktop: the Projects page disappears completely.
+   Mobile keeps the previous background treatment.
+========================================================= */
+
+@media (min-width: 768px) {
+  .project-list,
+  .main-footer,
+  .site-header {
+    transition: opacity 650ms ease;
+  }
+
+  body.about-open .project-list,
+  body.about-open .main-footer,
+  body.about-open .site-header {
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: 280ms;
+  }
+
+  /* No blur or milky overlay on desktop while About is open. */
+  body.about-open .about-backdrop {
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+
+
+/* =========================================================
+   ARCHIVE
+   Desktop: blank left 40% / archive list on right 60%
+========================================================= */
+
+.archive-page {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+
+  background: #fff;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  transition:
+    opacity 220ms ease,
+    visibility 0s linear 220ms;
+}
+
+.archive-page.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transition-delay: 0s;
+}
+
+.archive-list {
+  width: 60%;
+  margin-left: 40%;
+  padding: 18px 10px 72px 0;
+}
+
+
+
+.archive-footer {
+  position: fixed;
+  z-index: 36;
+  left: 40%;
+  right: 0;
+  bottom: 0;
+
+  display: grid;
+  grid-template-columns: 16.6667% 33.3333% 50%;
+  align-items: end;
+
+  padding: 10px 10px 10px 0;
+
+  background: #fff;
+}
+
+.archive-footer a,
+.archive-footer .footer-instagram,
+.archive-footer .footer-copyright {
+  text-decoration: none;
+}
+
+.archive-footer a {
+  transition: color 120ms ease;
+}
+
+.archive-footer a:hover {
+  color: #999;
+}
+
+.archive-footer .footer-email {
+  grid-column: 1;
+}
+
+.archive-footer .footer-instagram {
+  grid-column: 2;
+}
+
+.archive-footer .footer-copyright {
+  grid-column: 3;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+
+
+/* Archive cursor-following project image */
+.archive-cursor-preview {
+  position: fixed;
+  z-index: 38;
+  top: 0;
+  left: 0;
+
+  width: clamp(180px, 18vw, 280px);
+  max-height: 360px;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translate3d(-9999px, -9999px, 0);
+  transition:
+    opacity 120ms ease,
+    visibility 0s linear 120ms;
+}
+
+.archive-cursor-preview.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.archive-cursor-preview img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+}
+
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  .archive-cursor-preview {
+    display: none;
+  }
+}
+
+.archive-row {
+  font-size: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(150px, 1fr) auto;
+  gap: 20px;
+  align-items: baseline;
+
+  width: 100%;
+  padding: 7px 0;
+
+  border-top: 1px solid #000;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition: color 120ms ease;
+}
+
+.archive-row:hover {
+  color: #999;
+}
+
+.archive-title,
+.archive-category {
+  min-width: 0;
+}
+
+.archive-category {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.archive-year {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+body.archive-open .seoul-clock {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  body.about-open .archive-page {
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: 280ms;
+  }
+
+  body.about-closing.archive-open .archive-page {
+    transition-duration: 650ms;
+  }
+}
+
+/* =========================================================
+   ABOUT PANEL
+   Desktop: 60% panel slides in from the right
+========================================================= */
+
+.about-page {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 60%;
+  z-index: 60;
+
+  background: #00ff00;
+
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateX(100%);
+  will-change: transform;
+
+  transition:
+    transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 650ms;
+}
+
+.about-page.is-open {
+  visibility: visible;
+  pointer-events: auto;
+
+  transform: translateX(0);
+
+  transition:
+    transform 480ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0s;
+}
+
+.about-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.about-content {
+  width: 100%;
+  margin-left: 0;
+  padding: 10px 10px 40px;
+}
+
+.about-language {
+  position: relative;
+  margin: 0 0 42px;
+  padding-top: 18px;
+}
+
+.about-language .language-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 16.6667%;
+  text-align: center;
+}
+
+.about-language p {
+  margin: 0;
+}
+
+.about-details {
+  display: grid;
+  gap: 42px;
+  padding-top: 8px;
+}
+
+.about-row {
+  display: grid;
+  grid-template-columns: 20% 40% 40%;
+  align-items: start;
+}
+
+.about-label,
+.about-value,
+.about-note {
+  min-width: 0;
+}
+
+
+/* About close X */
+
+.about-close {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 70;
+
+  width: 14px;
+  height: 14px;
+
+  font-size: 0;
+  line-height: 1;
+
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.about-close::before,
+.about-close::after {
+  content: "";
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 16px;
+  height: 1px;
+
+  background: #000;
+  transform-origin: center;
+}
+
+.about-close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.about-close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.about-close:hover {
+  opacity: 0.45;
+}
+
+
+/* =========================================================
+   PROJECT LIGHTBOX / OVERLAY
+========================================================= */
+
+.project-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+
+  z-index: 100;
+
+  background: #fff;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: scale(0.995);
+  filter: blur(2px);
+
+  transition:
+    opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 360ms;
+}
+
+.project-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  max-height: none;
+  overflow: visible;
+
+  transform: scale(1);
+  filter: blur(0);
+
+  transition-delay: 0s;
+}
+
+.overlay-scroll {
+  height: auto;
+  overflow: visible;
+}
+
+
+/* overlay top */
+
+.overlay-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: start;
+
+  width: 60%;
+  margin-left: 40%;
+
+  padding: 10px 10px 10px 0;
+
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+
+.overlay-index-title {
+  display: flex;
+  gap: 4px;
+}
+
+.overlay-category {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+/* thin custom X */
+
+.overlay-close {
+  position: relative;
+  justify-self: end;
+
+  width: 14px;
+  height: 14px;
+
+  font-size: 0;
+  line-height: 1;
+
+  cursor: pointer;
+  transition: opacity 120ms ease;
+}
+
+.overlay-close::before,
+.overlay-close::after {
+  content: "";
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 16px;
+  height: 1px;
+
+  background: #000;
+  transform-origin: center;
+}
+
+.overlay-close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.overlay-close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.overlay-close:hover {
+  opacity: 0.45;
+}
+
+
+/* gallery */
+
+.overlay-gallery,
+.overlay-credits {
+  width: 60%;
+  margin-left: 40%;
+  padding-right: 10px;
+}
+
+.overlay-gallery {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+  align-items: start;
+}
+
+.overlay-gallery-item {
+  margin: 0;
+  min-width: 0;
+}
+
+.overlay-gallery-item[data-layout="full"] {
+  grid-column: span 6;
+}
+
+.overlay-gallery-item[data-layout="half"] {
+  grid-column: span 3;
+}
+
+.overlay-gallery-item[data-layout="third"] {
+  grid-column: span 2;
+}
+
+.overlay-gallery-item[data-layout="two_thirds"] {
+  grid-column: span 4;
+}
+
+.overlay-gallery-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+
+/* credits */
+
+.overlay-credits {
+  display: grid;
+  grid-template-columns: 18% 26% 1fr;
+  gap: 10px;
+
+  padding-top: 10px;
+  padding-bottom: 150px;
+}
+
+.credit-labels,
+.credit-values {
+  display: grid;
+  align-content: start;
+  gap: 0;
+}
+
+.credit-description {
+  margin: 0;
+}
+
+
+/* bottom navigation */
+
+.overlay-footer {
+  position: relative;
+  width: 100%;
+  min-height: 100px;
+}
+
+.project-nav {
+  position: absolute;
+
+  left: 40%;
+  right: 10px;
+  bottom: 10px;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.project-nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.nav-arrow {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+
+.nav-arrow-left {
+  transform: rotate(-135deg);
+}
+
+.nav-arrow-right {
+  transform: rotate(45deg);
+}
+
+.project-nav button:hover {
+  color: #999;
+}
+
+
+/* Project lightbox uses the browser's native document scrollbar. */
+body.overlay-open {
+  overflow: visible;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+  body {
+    font-size: var(--base-font-size);
+    line-height: 1.18;
+  }
+
+
+  /* mobile header:
+     Min eungi + About stay fixed while the project page scrolls */
+
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+
+    height: 37px;
+    z-index: 80;
+    pointer-events: none;
+
+    transition:
+      opacity 300ms ease;
+  
+
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .site-name,
+  .about-link,
+  .archive-link {
+    position: absolute;
+    top: 10px;
+    bottom: auto;
+
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  .site-name {
+    left: 10px;
+  }
+
+  .about-link {
+    left: auto;
+    right: 10px;
+  }
+
+  .archive-link {
+    left: auto;
+    right: 72px;
+  }
+
+  /* When About opens, the fixed header becomes part of the background:
+     it sits under the blur layer and softly fades with the Projects page. */
+  body.about-open .site-header {
+    z-index: 40;
+    opacity: 0.6;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+
+
+  .archive-page {
+    z-index: 35;
+  }
+
+  .archive-list {
+    width: 100%;
+    margin-left: 0;
+    padding: 47px 10px 72px;
+  }
+
+  .archive-footer {
+    left: 0;
+    right: 0;
+    width: 100%;
+
+    grid-template-columns: auto auto 1fr;
+    gap: 24px;
+
+    padding: 10px;
+  }
+
+  .archive-footer .footer-email,
+  .archive-footer .footer-instagram,
+  .archive-footer .footer-copyright {
+    grid-column: auto;
+  }
+
+  .archive-footer .footer-copyright {
+    justify-self: end;
+  }
+
+  .archive-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1px 12px;
+    padding: 6px 0;
+    line-height: 1.05;
+  }
+
+  .archive-title {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .archive-year {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .archive-category {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    color: #8f8f8f;
+    white-space: normal;
+  }
+
+  /* mobile projects */
+
+  .project-list {
+    width: 100%;
+    margin-left: 0;
+
+    /* 10px top + text line + 10px bottom */
+    padding: 37px 10px 0;
+  }
+
+  .project {
+    margin-bottom: 10px;
+  }
+
+  .project:last-child {
+    margin-bottom: 0;
+  }
+
+  .project-meta {
+    grid-template-columns: 1fr auto;
+    border-top: 1px solid #b5b5b5;
+    padding-top: 6px;
+    padding-bottom: 10px;
+  }
+
+  .project-id {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .project-title {
+    grid-column: 1;
+    grid-row: 1;
+    padding-left: 34px;
+  }
+
+  .project-info {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .project-year,
+  .project-description {
+    display: none;
+  }
+
+  .project-category {
+    text-align: right;
+  }
+
+
+
+  /* mobile footer:
+     same 10px page margin, all items on one baseline */
+
+  .main-footer {
+    width: 100%;
+    margin-left: 0;
+
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 24px;
+    align-items: end;
+
+    padding: 10px;
+  }
+
+  .footer-email,
+  .footer-instagram,
+  .footer-copyright {
+    grid-column: auto;
+  }
+
+  .footer-copyright {
+    justify-self: end;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+
+  /* mobile About:
+     green panel occupies the right 4/6 of the viewport */
+
+  .about-page {
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 66.6667%;
+    z-index: 60;
+  }
+
+  .about-content {
+    width: 100%;
+    margin-left: 0;
+
+    padding: 10px 10px 40px;
+  }
+
+  /* EN / KR are body labels, not headings:
+     no vertical gap, only a small left indent */
+  .about-language {
+    position: relative;
+    margin: 0 0 28px;
+    padding-top: 0;
+  }
+
+  .about-language .language-label {
+    position: static;
+    width: auto;
+
+    margin-left: 22%;
+    margin-bottom: 0;
+
+    text-align: left;
+  }
+
+  .about-language p {
+    margin: 0;
+  }
+
+  .about-details {
+    display: grid;
+    gap: 28px;
+
+    padding-top: 2px;
+  }
+
+  .about-row {
+    display: grid;
+    grid-template-columns: 34% 66%;
+    gap: 0;
+
+    align-items: start;
+  }
+
+  .about-label {
+    grid-column: 1;
+  }
+
+  .about-value {
+    grid-column: 2;
+  }
+
+  .about-note {
+    grid-column: 2;
+    margin-top: 0;
+  }
+
+  /* The green panel covers the original About label;
+     hide it explicitly while About is open. */
+  body.about-open .about-link {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .about-close {
+    top: 10px;
+    right: 10px;
+    z-index: 90;
+  }
+
+  /* Mobile uses the same full-screen blur/fade backdrop. */
+  .about-backdrop {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .about-backdrop.is-open {
+    transition-delay: 0s;
+  }
+
+
+  /* mobile overlay */
+
+  .project-overlay {
+    font-size: var(--base-font-size);
+  }
+
+  .overlay-topbar {
+    width: 100%;
+    margin-left: 0;
+
+    padding: 10px 10px 8px;
+    grid-template-columns: 1fr 1fr auto;
+  
+
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .overlay-index-title {
+    gap: 0;
+  }
+
+  .overlay-index-title #overlayTitle {
+    position: absolute;
+    left: 50%;
+
+    transform: translateX(-50%);
+  }
+
+  .overlay-category {
+    display: none;
+  }
+
+  .overlay-gallery,
+  .overlay-credits {
+    width: 100%;
+    margin-left: 0;
+
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .overlay-gallery {
+    gap: 5px;
+  }
+
+  .overlay-credits {
+    grid-template-columns: 1fr 1fr 1.35fr;
+    gap: 10px;
+
+    padding-top: 10px;
+    padding-bottom: 120px;
+  }
+
+  .overlay-footer {
+    min-height: 120px;
+  }
+
+  .project-nav {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+
+@media (max-width: 359px) {
+
+  .site-header::before,
+  .main-footer {
+    gap: 12px;
+    font-size: var(--base-font-size);
+  }
+
+
+
+  body,
+  .project-overlay {
+    font-size: var(--base-font-size);
+  }
+
+  .site-header {
+    padding-bottom: 90px;
+  }
+
+  .about-row {
+    grid-template-columns: 34% 66%;
+  }
+
+  .overlay-credits {
+    grid-template-columns: 0.9fr 1fr 1.25fr;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  .project-overlay,
+  .project-image-button img,
+  .about-page,
+  .about-backdrop,
+  .site-header {
+    transition: none;
+  }
+}
+
+
+
+/* Korean copy */
+#aboutKr {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+
+  word-break: keep-all;
+  overflow-wrap: normal;
+  line-break: strict;
+}
+
+
+/* Desktop left-side Seoul clock */
+.seoul-clock {
+  position: fixed;
+  z-index: 30;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  text-align: left;
+  color: #000;
+  font: inherit;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 280ms ease;
+}
+
+@media (min-width: 768px) {
+  .seoul-clock {
+    transition-duration: 650ms;
+  }
+
+  body.about-open .seoul-clock {
+    opacity: 0;
+    transition-duration: 280ms;
+  }
+}
+
+@media (max-width: 767px) {
+  .seoul-clock {
+    display: none;
+  }
+}
+
+
+.credit-description-group {
+  min-width: 0;
+}
+
+.credit-description {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.credit-description + .credit-description {
+  margin-top: 1em;
+}
+
+.credit-description-en {
+  font-family: "Neue Haas Grotesk Display Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.credit-description-kr {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-weight: 400;
+
+  line-height: 1.3;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  line-break: strict;
+}
+
+/* Fixed main project image crop */
+.project-item img,
+.project-card img,
+.project-image img {
+  display: block;
+  width: 100%;
+  height: 1500px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 767px) {
+  .project-item img,
+  .project-card img,
+  .project-image img {
+    height: 1500px;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+
+/* Seoul clock spacing — adjust only this value */
+.clock-time {
+  margin-left: 12px;
+}
+
+.clock-colon {
+  display: inline-block;
+  margin: 0 6px;
+}
+
+
+/* Mobile About close stacking fix */
+@media (max-width: 767px) {
+  body.about-closing .site-header,
+  body.about-open .site-header {
+    z-index: 40 !important;
+  }
+
+  body.about-closing .about-backdrop {
+    z-index: 70;
+  }
+
+  body.about-closing .about-page {
+    z-index: 80;
+  }
+}
+
+
+/* Desktop fast-scroll fade */
+@media (min-width: 768px) {
+  :root {
+    --scroll-fade-opacity: 1;
+  }
+
+  .project-list,
+  .main-footer {
+    opacity: var(--scroll-fade-opacity);
+    transition: opacity 220ms ease-out;
+    will-change: opacity;
+  }
+
+  body.about-open .project-list,
+  body.about-open .main-footer {
+    opacity: 0;
+  }
+}
+
+
+/* Desktop project hover cue */
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  .project-image-button::before,
+  .project-image-button::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    background: #000;
+    opacity: 0;
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+    pointer-events: none;
+  }
+
+  /* horizontal line */
+  .project-image-button::before {
+    width: 20px;
+    height: 1px;
+    right: 10px;
+    bottom: 19.5px;
+    transform: translateY(2px);
+  }
+
+  /* vertical line */
+  .project-image-button::after {
+    width: 1px;
+    height: 20px;
+    right: 19.5px;
+    bottom: 10px;
+    transform: translateY(2px);
+  }
+
+  .project-image-button:hover:not(.is-opening)::before,
+  .project-image-button:hover:not(.is-opening)::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .project-image-button:hover:not(.is-opening) img {
+    opacity: 0.9;
+  }
+}
+
+
+/* Keep the underlying site completely hidden while a project lightbox is open.
+   This prevents short lightboxes from revealing the main/archive page below. */
+body.overlay-open > .site-header,
+body.overlay-open > .seoul-clock,
+body.overlay-open > .project-list,
+body.overlay-open > .main-footer,
+body.overlay-open > .archive-page,
+body.overlay-open > .about-backdrop,
+body.overlay-open > .about-page {
+  display: none !important;
+}
+
+body.overlay-open {
+  min-height: 100vh;
+  background: #fff;
+}
