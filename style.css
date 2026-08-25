@@ -470,18 +470,6 @@ body.archive-open .seoul-clock {
   pointer-events: none;
 }
 
-@media (min-width: 768px) {
-  body.about-open .archive-page {
-    opacity: 0;
-    pointer-events: none;
-    transition-duration: 280ms;
-  }
-
-  body.about-closing.archive-open .archive-page {
-    transition-duration: 650ms;
-  }
-}
-
 /* =========================================================
    ABOUT PANEL
    Desktop: 60% panel slides in from the right
@@ -1300,6 +1288,11 @@ body.overlay-open {
   top: 50%;
   left: 10px;
   transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
   text-align: left;
   color: #000;
   font: inherit;
@@ -1307,6 +1300,36 @@ body.overlay-open {
   white-space: nowrap;
   transition: opacity 280ms ease;
 }
+
+.seoul-clock-digital {
+  display: flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.analog-clock {
+  display: block;
+  width: 88px;
+  height: 88px;
+  overflow: visible;
+  flex: 0 0 auto;
+}
+
+.analog-clock-dots circle {
+  fill: currentColor;
+}
+
+.analog-hand line {
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-linecap: square;
+}
+
+.analog-hand path {
+  fill: currentColor;
+}
+
 
 @media (min-width: 768px) {
   .seoul-clock {
@@ -1325,6 +1348,38 @@ body.overlay-open {
   }
 }
 
+
+
+
+/* Mobile About analog clock */
+.about-mobile-clock {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .about-mobile-clock {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 2;
+
+    display: block;
+    width: 87px;
+    height: 87px;
+
+    color: #000;
+    pointer-events: none;
+  }
+
+  .about-mobile-clock .about-mobile-analog-clock {
+    width: 87px;
+    height: 87px;
+  }
+
+  .about-content {
+    padding-bottom: 118px;
+  }
+}
 
 .credit-description-group {
   min-width: 0;
@@ -1379,6 +1434,18 @@ body.overlay-open {
 /* Seoul clock spacing — adjust only this value */
 .clock-time {
   margin-left: 12px;
+  display: inline-flex;
+  align-items: baseline;
+
+  /* Keep changing digits from shifting the analog clock sideways. */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.clock-time > span:not(.clock-colon) {
+  display: inline-block;
+  width: 2ch;
+  text-align: center;
 }
 
 .clock-colon {
