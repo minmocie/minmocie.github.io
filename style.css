@@ -781,10 +781,15 @@ body.archive-open .seoul-clock {
   grid-column: span 4;
 }
 
-.overlay-gallery-item img {
+.overlay-gallery-item img,
+.overlay-gallery-item video {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.overlay-gallery-item video {
+  background: #000;
 }
 
 
@@ -1407,7 +1412,7 @@ body.overlay-open {
 .credit-description-kr {
   font-family: "Pretendard", -apple-system, BlinkMacSystemFont,
     "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  font-weight: 380;
+  font-weight: 400;
 
   line-height: 1.3;
   word-break: keep-all;

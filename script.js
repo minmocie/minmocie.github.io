@@ -205,12 +205,17 @@ function escapeHTML(value = "") {
     .replaceAll("'", "&#039;");
 }
 
+function isVideoMedia(url) {
+  return /\.(mp4|webm)(?:$|[?#])/i.test(String(url || ""));
+}
+
 function mapDatabaseProject(row) {
   const gallery = [...(row.project_images || [])]
     .sort((a, b) => a.sort_order - b.sort_order)
     .map((image) => ({
       url: image.image_url,
-      layout: image.layout || "full"
+      layout: image.layout || "full",
+      type: isVideoMedia(image.image_url) ? "video" : "image"
     }));
 
   const cover = row.cover_image_url || gallery[0]?.url || "";
@@ -674,20 +679,44 @@ function renderProject(index) {
   const images = project.images?.length
     ? project.images
     : project.cover
-      ? [{ url: project.cover, layout: "full" }]
+      ? [{ url: project.cover, layout: "full", type: "image" }]
       : [];
 
-  fields.gallery.innerHTML = images.map((image, i) => `
-    <figure
-      class="overlay-gallery-item"
-      data-layout="${escapeHTML(image.layout || "full")}"
-    >
-      <img
-        src="${escapeHTML(image.url || "")}"
-        alt="${escapeHTML(project.title)} project image ${i + 1}"
-      />
-    </figure>
-  `).join("");
+  fields.gallery.innerHTML = images.map((media, i) => {
+    const url = escapeHTML(media.url || "");
+    const isVideo = media.type === "video" || isVideoMedia(media.url);
+
+    const mediaMarkup = isVideo
+      ? `
+        <video
+          src="${url}"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-label="${escapeHTML(project.title)} project video ${i + 1}"
+        ></video>
+      `
+      : `
+        <img
+          src="${url}"
+          alt="${escapeHTML(project.title)} project image ${i + 1}"
+          loading="${i === 0 ? "eager" : "lazy"}"
+          decoding="async"
+        />
+      `;
+
+    return `
+      <figure
+        class="overlay-gallery-item"
+        data-layout="${escapeHTML(media.layout || "full")}"
+        data-media-type="${isVideo ? "video" : "image"}"
+      >
+        ${mediaMarkup}
+      </figure>
+    `;
+  }).join("");
 }
 
 function openProject(key) {
@@ -709,6 +738,10 @@ function openProject(key) {
 }
 
 function closeProject() {
+  fields.gallery
+    .querySelectorAll("video")
+    .forEach((video) => video.pause());
+
   overlay.classList.remove("is-open");
   overlay.setAttribute("aria-hidden", "true");
   document.body.classList.remove("overlay-open");
