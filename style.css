@@ -450,6 +450,13 @@ body.about-open .site-header {
   transition: color 120ms ease;
 }
 
+@media (min-width: 768px) {
+  .archive-row {
+    font-size: clamp(20px, 1.35vw, 30px);
+  }
+}
+
+
 .archive-row:hover {
   color: #999;
 }
@@ -669,7 +676,6 @@ body.archive-open .seoul-clock {
   z-index: 5;
 
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
   align-items: start;
 
   width: 60%;
@@ -680,12 +686,12 @@ body.archive-open .seoul-clock {
   background: rgba(255, 255, 255, 0.72);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+  grid-template-columns: 1fr auto 1fr;
 }
 
 
 .overlay-index-title {
-  display: flex;
-  gap: 4px;
+  display: contents;
 }
 
 .overlay-category {
@@ -696,14 +702,38 @@ body.archive-open .seoul-clock {
   transform: translateX(-50%);
   text-align: center;
   white-space: nowrap;
+  display: none;
 }
+
+/* lightbox topbar: index / title / close */
+#overlayIndex {
+  grid-column: 1;
+  justify-self: start;
+  text-align: left;
+}
+
+#overlayTitle {
+  grid-column: 2;
+  justify-self: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.overlay-close {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.overlay-category {
+  display: none !important;
+}
+
 
 
 /* thin custom X */
 
 .overlay-close {
   position: relative;
-  justify-self: end;
 
   width: 14px;
   height: 14px;
@@ -713,6 +743,7 @@ body.archive-open .seoul-clock {
 
   cursor: pointer;
   transition: opacity 120ms ease;
+  justify-self: end;
 }
 
 .overlay-close::before,
@@ -1181,23 +1212,12 @@ body.overlay-open {
     margin-left: 0;
 
     padding: 10px 10px 8px;
-    grid-template-columns: 1fr 1fr auto;
   
 
     background: rgba(255, 255, 255, 0.72);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
-  }
-
-  .overlay-index-title {
-    gap: 0;
-  }
-
-  .overlay-index-title #overlayTitle {
-    position: absolute;
-    left: 50%;
-
-    transform: translateX(-50%);
+    grid-template-columns: 1fr auto 1fr;
   }
 
   .overlay-category {
@@ -1283,7 +1303,7 @@ body.overlay-open {
 #aboutKr {
   font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
     "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  font-weight: 400;
+  font-weight: 380;
 
   word-break: keep-all;
   overflow-wrap: normal;
@@ -1600,10 +1620,6 @@ body.overlay-open {
     --base-font-size: 18px;
   }
 
-  .archive-row {
-    font-size: 27px;
-  }
-
   .project-image-button img {
     width: 100%;
     height: auto !important;
@@ -1628,11 +1644,17 @@ body.overlay-open {
     --base-font-size: 20px;
   }
 
-  .archive-row {
-    font-size: 30px;
-  }
-
   .project-image-button img {
     height: auto !important;
   }
+}
+
+.overlay-number {
+  justify-self: start;
+  text-align: left;
+}
+
+.overlay-title {
+  justify-self: center;
+  text-align: center;
 }

@@ -352,10 +352,15 @@ function renderArchive() {
 }
 
 const PROJECT_BATCH_SIZE = 5;
+const PROJECT_LOAD_AHEAD_PX = 500;
+const USER_SCROLL_INTENT_WINDOW = 1200;
+
 let renderedProjectCount = 0;
 let projectScrollHandler = null;
 let projectScrollTicking = false;
-let lastProjectScrollY = 0;
+let projectBatchReady = false;
+let lastUserDownIntentAt = -Infinity;
+let touchStartY = null;
 
 function projectMarkup(project, projectIndex) {
   const isFirstProject = projectIndex === 0;
@@ -399,8 +404,34 @@ function revealNewProjects(elements) {
   });
 }
 
+function waitForProjectImages(elements) {
+  const images = elements.flatMap((element) =>
+    [...element.querySelectorAll("img")]
+  );
+
+  if (!images.length) {
+    return Promise.resolve();
+  }
+
+  return Promise.all(
+    images.map((image) => {
+      if (image.complete && image.naturalWidth > 0) {
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        const finish = () => resolve();
+        image.addEventListener("load", finish, { once: true });
+        image.addEventListener("error", finish, { once: true });
+      });
+    })
+  );
+}
+
 function renderNextProjectBatch() {
   if (!projectList || renderedProjectCount >= projects.length) return;
+
+  projectBatchReady = false;
 
   const start = renderedProjectCount;
   const end = Math.min(start + PROJECT_BATCH_SIZE, projects.length);
@@ -414,70 +445,156 @@ function renderNextProjectBatch() {
   );
 
   renderedProjectCount = end;
+  projectList.dataset.renderedCount = String(renderedProjectCount);
 
-  const newProjects = [...projectList.querySelectorAll(".project-enter:not(.is-visible)")];
+  const newProjects = [
+    ...projectList.querySelectorAll(".project-enter:not(.is-visible)")
+  ];
+
   revealNewProjects(newProjects);
   bindProjectButtons();
 
-  if (renderedProjectCount >= projects.length && projectScrollHandler) {
+  waitForProjectImages(newProjects).then(() => {
+    projectBatchReady = true;
+  });
+
+  if (renderedProjectCount >= projects.length) {
+    teardownProgressiveProjectLoading();
+  }
+}
+
+function markUserDownScrollIntent() {
+  lastUserDownIntentAt = performance.now();
+}
+
+function hasRecentUserDownScrollIntent() {
+  return (
+    performance.now() - lastUserDownIntentAt <= USER_SCROLL_INTENT_WINDOW
+  );
+}
+
+function shouldLoadNextProjectBatch() {
+  if (
+    !projectBatchReady ||
+    renderedProjectCount >= projects.length ||
+    !hasRecentUserDownScrollIntent()
+  ) {
+    return false;
+  }
+
+  const renderedProjects = projectList.querySelectorAll(".project");
+  const lastRenderedProject = renderedProjects[renderedProjects.length - 1];
+
+  if (!lastRenderedProject) return false;
+
+  const lastProjectBottom =
+    lastRenderedProject.getBoundingClientRect().bottom;
+
+  return lastProjectBottom <= window.innerHeight + PROJECT_LOAD_AHEAD_PX;
+}
+
+function handleProgressiveProjectScroll() {
+  if (projectScrollTicking) return;
+
+  projectScrollTicking = true;
+
+  window.requestAnimationFrame(() => {
+    if (shouldLoadNextProjectBatch()) {
+      renderNextProjectBatch();
+    }
+
+    projectScrollTicking = false;
+  });
+}
+
+function handleProjectWheel(event) {
+  if (event.deltaY > 0) {
+    markUserDownScrollIntent();
+  }
+}
+
+function handleProjectTouchStart(event) {
+  touchStartY = event.touches?.[0]?.clientY ?? null;
+}
+
+function handleProjectTouchMove(event) {
+  const currentY = event.touches?.[0]?.clientY;
+
+  if (
+    touchStartY != null &&
+    currentY != null &&
+    currentY < touchStartY
+  ) {
+    markUserDownScrollIntent();
+    touchStartY = currentY;
+  }
+}
+
+function handleProjectScrollKey(event) {
+  const downKeys = new Set([
+    "ArrowDown",
+    "PageDown",
+    "End",
+    " "
+  ]);
+
+  if (downKeys.has(event.key)) {
+    markUserDownScrollIntent();
+  }
+}
+
+function teardownProgressiveProjectLoading() {
+  if (projectScrollHandler) {
     window.removeEventListener("scroll", projectScrollHandler);
     projectScrollHandler = null;
   }
+
+  window.removeEventListener("wheel", handleProjectWheel);
+  window.removeEventListener("touchstart", handleProjectTouchStart);
+  window.removeEventListener("touchmove", handleProjectTouchMove);
+  window.removeEventListener("keydown", handleProjectScrollKey);
+
+  touchStartY = null;
 }
 
 function setupProgressiveProjectLoading() {
+  teardownProgressiveProjectLoading();
+
   if (!projectList || renderedProjectCount >= projects.length) return;
 
-  if (projectScrollHandler) {
-    window.removeEventListener("scroll", projectScrollHandler);
-  }
+  projectScrollHandler = handleProgressiveProjectScroll;
 
-  lastProjectScrollY = window.scrollY;
-
-  projectScrollHandler = () => {
-    if (projectScrollTicking) return;
-
-    projectScrollTicking = true;
-
-    window.requestAnimationFrame(() => {
-      const currentScrollY = window.scrollY;
-      const isScrollingDown = currentScrollY > lastProjectScrollY;
-      lastProjectScrollY = currentScrollY;
-
-      const distanceFromBottom =
-        document.documentElement.scrollHeight -
-        (currentScrollY + window.innerHeight);
-
-      // Important: do not load anything until the visitor actually scrolls down.
-      if (
-        isScrollingDown &&
-        currentScrollY > 20 &&
-        distanceFromBottom <= 500 &&
-        renderedProjectCount < projects.length
-      ) {
-        renderNextProjectBatch();
-      }
-
-      projectScrollTicking = false;
-    });
-  };
-
-  window.addEventListener("scroll", projectScrollHandler, { passive: true });
+  window.addEventListener("scroll", projectScrollHandler, {
+    passive: true
+  });
+  window.addEventListener("wheel", handleProjectWheel, {
+    passive: true
+  });
+  window.addEventListener("touchstart", handleProjectTouchStart, {
+    passive: true
+  });
+  window.addEventListener("touchmove", handleProjectTouchMove, {
+    passive: true
+  });
+  window.addEventListener("keydown", handleProjectScrollKey);
 }
 
 function renderProjectList() {
-  if (projectScrollHandler) {
-    window.removeEventListener("scroll", projectScrollHandler);
-    projectScrollHandler = null;
-  }
+  teardownProgressiveProjectLoading();
 
   projectScrollTicking = false;
+  projectBatchReady = false;
+  lastUserDownIntentAt = -Infinity;
   renderedProjectCount = 0;
+
   projectList.innerHTML = "";
+  projectList.dataset.renderedCount = "0";
 
   renderArchive();
 
-  // Initial render is always capped at five projects.
+  // Exactly five projects are inserted into the DOM on initial load.
+  // More projects can only be inserted after a real downward user scroll
+  // and only when the fifth/current last project approaches the viewport.
   renderNextProjectBatch();
   setupProgressiveProjectLoading();
 }
