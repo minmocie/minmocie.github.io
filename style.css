@@ -1595,11 +1595,15 @@ body.overlay-open {
     --base-font-size: 18px;
   }
 
+  .archive-row {
+    font-size: 27px;
+  }
+
   .project-image-button img {
     width: 100%;
-    height: min(64vh, 920px) !important;
-    object-fit: cover;
-    object-position: center;
+    height: auto !important;
+    object-fit: initial;
+    object-position: initial;
   }
 
   .project-meta {
@@ -1619,7 +1623,11 @@ body.overlay-open {
     --base-font-size: 20px;
   }
 
+  .archive-row {
+    font-size: 30px;
+  }
+
   .project-image-button img {
-    height: min(64vh, 920px) !important;
+    height: auto !important;
   }
 }
