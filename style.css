@@ -4,7 +4,7 @@
    * but scales typography up on large desktop monitors.
    * ~14px at 1512px wide / ~16px at 1920px / 20px at 2560px+
    */
-  --base-font-size: clamp(13px, calc(4.8px + 0.6vw), 20px);
+  --base-font-size: clamp(13px, calc(7px + 0.45vw), 17px);
 }
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
@@ -1583,25 +1583,43 @@ body.overlay-open {
 }
 
 
+
+
 /* =========================================================
-   LARGE DESKTOP BALANCE
-   Preserve laptop proportions on QHD / large monitors.
+   LARGE DESKTOP BALANCE — explicit breakpoint scaling
 ========================================================= */
-@media (min-width: 1800px) {
+
+/* Standard laptop / desktop stays close to the original balance. */
+@media (min-width: 1700px) {
+  :root {
+    --base-font-size: 18px;
+  }
+
   .project-image-button img {
     width: 100%;
-    height: min(76vh, 1100px);
+    height: min(64vh, 920px) !important;
     object-fit: cover;
     object-position: center;
   }
 
   .project-meta {
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .project-description {
-    margin-top: 12px;
-    line-height: 1.22;
+    margin-top: 10px;
+    line-height: 1.24;
+  }
+}
+
+/* QHD / very wide desktop */
+@media (min-width: 2300px) {
+  :root {
+    --base-font-size: 20px;
+  }
+
+  .project-image-button img {
+    height: min(64vh, 920px) !important;
   }
 }
