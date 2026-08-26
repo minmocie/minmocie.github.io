@@ -346,9 +346,17 @@ function renderArchive() {
   bindArchivePreviews();
 }
 
-function renderProjectList() {
-  projectList.innerHTML = projects.map((project) => `
-    <article class="project">
+const PROJECT_BATCH_SIZE = 5;
+let renderedProjectCount = 0;
+let projectScrollHandler = null;
+let projectScrollTicking = false;
+let lastProjectScrollY = 0;
+
+function projectMarkup(project, projectIndex) {
+  const isFirstProject = projectIndex === 0;
+
+  return `
+    <article class="project project-enter">
       <div class="project-meta">
         <div class="project-id">${escapeHTML(project.index)}</div>
         <div class="project-title">${escapeHTML(project.title)}</div>
@@ -366,13 +374,107 @@ function renderProjectList() {
         data-open-project="${escapeHTML(project.key)}"
         aria-label="Open ${escapeHTML(project.title)} project"
       >
-        <img src="${escapeHTML(project.cover)}" alt="${escapeHTML(project.title)} project preview" />
+        <img
+          src="${escapeHTML(project.cover)}"
+          alt="${escapeHTML(project.title)} project preview"
+          loading="${isFirstProject ? "eager" : "lazy"}"
+          decoding="async"
+          ${isFirstProject ? 'fetchpriority="high"' : ""}
+        />
       </button>
     </article>
-  `).join("");
+  `;
+}
+
+function revealNewProjects(elements) {
+  window.requestAnimationFrame(() => {
+    elements.forEach((element) => {
+      element.classList.add("is-visible");
+    });
+  });
+}
+
+function renderNextProjectBatch() {
+  if (!projectList || renderedProjectCount >= projects.length) return;
+
+  const start = renderedProjectCount;
+  const end = Math.min(start + PROJECT_BATCH_SIZE, projects.length);
+  const batch = projects.slice(start, end);
+
+  projectList.insertAdjacentHTML(
+    "beforeend",
+    batch
+      .map((project, offset) => projectMarkup(project, start + offset))
+      .join("")
+  );
+
+  renderedProjectCount = end;
+
+  const newProjects = [...projectList.querySelectorAll(".project-enter:not(.is-visible)")];
+  revealNewProjects(newProjects);
+  bindProjectButtons();
+
+  if (renderedProjectCount >= projects.length && projectScrollHandler) {
+    window.removeEventListener("scroll", projectScrollHandler);
+    projectScrollHandler = null;
+  }
+}
+
+function setupProgressiveProjectLoading() {
+  if (!projectList || renderedProjectCount >= projects.length) return;
+
+  if (projectScrollHandler) {
+    window.removeEventListener("scroll", projectScrollHandler);
+  }
+
+  lastProjectScrollY = window.scrollY;
+
+  projectScrollHandler = () => {
+    if (projectScrollTicking) return;
+
+    projectScrollTicking = true;
+
+    window.requestAnimationFrame(() => {
+      const currentScrollY = window.scrollY;
+      const isScrollingDown = currentScrollY > lastProjectScrollY;
+      lastProjectScrollY = currentScrollY;
+
+      const distanceFromBottom =
+        document.documentElement.scrollHeight -
+        (currentScrollY + window.innerHeight);
+
+      // Important: do not load anything until the visitor actually scrolls down.
+      if (
+        isScrollingDown &&
+        currentScrollY > 20 &&
+        distanceFromBottom <= 500 &&
+        renderedProjectCount < projects.length
+      ) {
+        renderNextProjectBatch();
+      }
+
+      projectScrollTicking = false;
+    });
+  };
+
+  window.addEventListener("scroll", projectScrollHandler, { passive: true });
+}
+
+function renderProjectList() {
+  if (projectScrollHandler) {
+    window.removeEventListener("scroll", projectScrollHandler);
+    projectScrollHandler = null;
+  }
+
+  projectScrollTicking = false;
+  renderedProjectCount = 0;
+  projectList.innerHTML = "";
 
   renderArchive();
-  bindProjectButtons();
+
+  // Initial render is always capped at five projects.
+  renderNextProjectBatch();
+  setupProgressiveProjectLoading();
 }
 
 
@@ -621,7 +723,9 @@ function closeProject() {
 }
 
 function bindProjectButtons() {
-  document.querySelectorAll("[data-open-project]").forEach((button) => {
+  document.querySelectorAll("[data-open-project]:not([data-project-bound])").forEach((button) => {
+    button.dataset.projectBound = "true";
+
     button.addEventListener("click", () => {
       const isArchiveRow = button.classList.contains("archive-row");
       const delay = isArchiveRow ? 0 : 220;

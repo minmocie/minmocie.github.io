@@ -1,5 +1,10 @@
 :root {
-  --base-font-size: clamp(13px, calc(11px + 0.2vw), 16px);
+  /*
+   * Keeps laptop sizing close to the current look,
+   * but scales typography up on large desktop monitors.
+   * ~14px at 1512px wide / ~16px at 1920px / 20px at 2560px+
+   */
+  --base-font-size: clamp(13px, calc(4.8px + 0.6vw), 20px);
 }
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
@@ -1551,4 +1556,52 @@ body.overlay-open > .about-page {
 body.overlay-open {
   min-height: 100vh;
   background: #fff;
+}
+
+
+/* Progressive project loading */
+.project-enter {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 320ms ease,
+    transform 420ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.project-enter.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-enter,
+  .project-enter.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+
+/* =========================================================
+   LARGE DESKTOP BALANCE
+   Preserve laptop proportions on QHD / large monitors.
+========================================================= */
+@media (min-width: 1800px) {
+  .project-image-button img {
+    width: 100%;
+    height: min(76vh, 1100px);
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .project-meta {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .project-description {
+    margin-top: 12px;
+    line-height: 1.22;
+  }
 }
